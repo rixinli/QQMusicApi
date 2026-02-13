@@ -5,7 +5,8 @@
 ### 克隆仓库
 
 ```bash
-git clone https://github.com/luren-dc/QQMusicApi
+# 克隆当前开发分支 Rixin-Personal-Dev
+git clone -b Rixin-Personal-Dev https://github.com/l-1124/QQMusicApi
 ```
 
 ### 依赖安装
@@ -29,9 +30,9 @@ docker run -d -p 8000:8000 qq-music-api
 
 ## 2. API Endpoint
 
-- **请求格式**: `GET /{module}/{func}`
-- **示例**:  
-  `GET /song/get_detail?id=12345`
+- **RESTful 路径**: 如 `GET /search/hotkey`、`GET /song/detail?value=xxx`（见 Swagger `/docs`）
+- **泛化路径**: `GET /{module}/{func}?param=value`，示例: `GET /search/hotkey`、`GET /song/get_detail?value=12345`
+- 路由由 `web/routes_config.py` 配置驱动，便于维护
 
 ## 3. 请求参数规则
 

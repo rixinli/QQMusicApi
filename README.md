@@ -13,7 +13,7 @@
         <img src="https://img.shields.io/github/stars/l-1124/QQMusicApi?color=yellow&label=Github%20Stars" alt="STARS">
     </a>
     <a href="https://github.com/l-1124/QQMusicApi/actions/workflows/testing.yml">
-        <img src="https://github.com/l-1124/QQMusicApi/actions/workflows/testing.yml/badge.svg?branch=main" alt="Testing">
+        <img src="https://github.com/l-1124/QQMusicApi/actions/workflows/testing.yml/badge.svg?branch=Rixin-Personal-Dev" alt="Testing">
     </a>
 </div>
 
