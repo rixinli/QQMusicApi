@@ -28,6 +28,13 @@ docker build . -t qq-music-api
 docker run -d -p 8000:8000 qq-music-api
 ```
 
+### Docker 内运行 API 测试
+
+```bash
+docker build -f Dockerfile.test -t qq-music-api-test .
+docker run qq-music-api-test
+```
+
 ## 2. API Endpoint
 
 - **RESTful 路径**: 如 `GET /search/hotkey`、`GET /song/detail?value=xxx`（见 Swagger `/docs`）

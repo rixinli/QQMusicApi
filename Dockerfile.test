@@ -1,0 +1,8 @@
+# Web API 综合测试 - 在 Docker 内运行 pytest
+FROM python:3.13-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN mkdir /app
+WORKDIR /app
+COPY . /app/
+RUN uv sync --group web --group testing
+CMD ["uv", "run", "pytest", "tests/test_web_api.py", "-v", "--tb=short"]
