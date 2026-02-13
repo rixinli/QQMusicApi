@@ -70,7 +70,7 @@ async def quick_search(keyword: str) -> dict[str, Any]:
     return resp.json()["data"]
 
 
-@api_request("music.adaptor.SearchAdaptor", "do_search_v2")
+@api_request("music.adaptor.SearchAdaptor", "do_search_v2", enable_sign=True)
 async def general_search(
     keyword: str,
     page: int = 1,
@@ -94,7 +94,7 @@ async def general_search(
     }, NO_PROCESSOR
 
 
-@api_request("music.search.SearchCgiService", "DoSearchForQQMusicMobile")
+@api_request("music.search.SearchCgiService", "DoSearchForQQMusicMobile", enable_sign=True)
 async def search_by_type(
     keyword: str,
     search_type: SearchType = SearchType.SONG,

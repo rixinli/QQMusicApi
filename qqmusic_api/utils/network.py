@@ -37,6 +37,7 @@ def api_request(
     ignore_code: bool = False,
     process_bool: bool = True,
     catch_error_code: list[int] | None = None,
+    enable_sign: bool | None = None,
 ):
     """API请求装饰器.
 
@@ -49,6 +50,7 @@ def api_request(
         ignore_code: 是否忽略业务状态码检查.如果为 `True`,将跳过 `code != 0` 的验证.
         process_bool: 是否转换布尔值.如果为 `True`,参数中的 `bool` 值会自动转换为 `int` (`0`/`1`).
         catch_error_code: 视为成功的错误码列表.当响应 `code` 在此列表中时,不会抛出异常.
+        enable_sign: 是否启用请求签名.为 `True` 时强制使用加密接口,为 `None` 时跟随 Session 配置.
 
     Returns:
         一个装饰器,将函数转换为返回 `ApiRequest` 的可调用对象.
@@ -65,6 +67,7 @@ def api_request(
             ignore_code=ignore_code,
             process_bool=process_bool,
             catch_error_code=catch_error_code,
+            enable_sign=enable_sign,
         )
 
     return decorator
@@ -89,11 +92,13 @@ class BaseRequest(ABC):
         credential: Credential | None = None,
         verify: bool = False,
         ignore_code: bool = False,
+        enable_sign: bool | None = None,
     ) -> None:
         self._common = common or {}
         self._credential = credential
         self.verify = verify
         self.ignore_code = ignore_code
+        self._enable_sign = enable_sign
 
     @property
     def session(self) -> Session:
@@ -166,11 +171,12 @@ class BaseRequest(ABC):
         """统一构建请求参数"""
         data = self.build_request_data()
         config = self.session.api_config
+        use_sign = self._enable_sign if self._enable_sign is not None else config["enable_sign"]
         request_params = {
-            "url": config["enc_endpoint" if config["enable_sign"] else "endpoint"],
+            "url": config["enc_endpoint" if use_sign else "endpoint"],
             "json": data,
         }
-        if config["enable_sign"]:
+        if use_sign:
             request_params["params"] = {"sign": sign(data)}
         return request_params
 
@@ -211,6 +217,7 @@ class ApiRequest(BaseRequest, Generic[_P, _R]):
         ignore_code: bool = False,
         process_bool: bool = True,
         catch_error_code: list[int] | None = None,
+        enable_sign: bool | None = None,
     ) -> None:
         """初始化 ApiRequest.
 
@@ -225,8 +232,9 @@ class ApiRequest(BaseRequest, Generic[_P, _R]):
             ignore_code: 是否忽略错误码.
             process_bool: 是否处理布尔值.
             catch_error_code: 捕获的错误码列表.
+            enable_sign: 是否启用请求签名.为 `True` 时强制使用加密接口,为 `None` 时跟随 Session 配置.
         """
-        super().__init__(common, credential, verify, ignore_code)
+        super().__init__(common, credential, verify, ignore_code, enable_sign)
         self.module = module
         self.method = method
         self.params = params or {}
