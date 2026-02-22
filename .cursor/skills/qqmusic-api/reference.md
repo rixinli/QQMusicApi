@@ -1,97 +1,131 @@
-# QQMusic API 完整接口参考
+# QQMusic API 接口参考
 
-基地址默认：`http://localhost:8000`，所有接口 GET 请求。
+基于 `web/routes_config.py` 的开放接口，供 MCP 或其他 Agent 通过 HTTP GET 调用。
+
+- **基地址**：`http://localhost:8000`（可按部署修改）
+- **请求方式**：全部为 `GET`
+- **响应格式**：`{ "code": 200, "message": "Success", "data": {...}, "timestamp": 1234567890 }`
+
+---
 
 ## 搜索
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /search/hotkey | 无 | 热搜词 |
-| /search/complete | keyword | 搜索补全 |
-| /search/general | keyword, page=1, highlight=true | 综合搜索 |
-| /search/by_type | keyword, search_type=0, num=10, page=1, highlight=true | 按类型搜索。search_type: 0歌1人2专3单4MV7词8用户 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/search/hotkey` | 获取热搜词 | 无 |
+| `/search/complete` | 搜索词补全 | `keyword`（必填） |
+| `/search/general` | 综合搜索 | `keyword`（必填）, `page`=1, `highlight`=true |
+| `/search/by_type` | 按类型搜索 | `keyword`（必填）, `search_type`=0, `num`=10, `page`=1, `highlight`=true |
+
+`search_type`：0=歌曲, 1=歌手, 2=专辑, 3=歌单, 4=MV, 7=歌词, 8=用户
+
+---
 
 ## 歌曲
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /song/query | ids | 歌曲信息，ids 逗号分隔 |
-| /song/urls | mids, file_type=MP3_128 | 播放链接 |
-| /song/detail | value | 歌曲详情，value 为 id 或 mid |
-| /song/similar | songid | 相似歌曲 |
-| /song/labels | songid | 歌曲标签 |
-| /song/related_mv | songid | 相关 MV |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/song/query` | 获取歌曲信息 | `ids`（必填，逗号分隔） |
+| `/song/urls` | 获取歌曲播放链接 | `mids`（必填，逗号分隔）, `file_type`=MP3_128 |
+| `/song/detail` | 获取歌曲详情 | `value`（必填，歌曲 ID 或 mid） |
+| `/song/similar` | 获取相似歌曲 | `songid`（必填） |
+| `/song/labels` | 获取歌曲标签 | `songid`（必填） |
+| `/song/related_mv` | 获取相关 MV | `songid`（必填）, `last_mvid`="" |
+
+`file_type`：MP3_128, MP3_320, FLAC, OGG_320
+
+---
 
 ## 歌手
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /singer/list | area=-100, sex=-100, genre=-100 | 歌手列表。area: -100全,200内地,2港台,5欧美,4日,3韩；sex: -100全,0男,1女,2乐队 |
-| /singer/info | mid | 歌手信息 |
-| /singer/songs | mid, page=1, num=10 | 歌手歌曲 |
-| /singer/albums | mid, page=1, num=10 | 歌手专辑 |
-| /singer/desc | mids | 歌手简介，mids 逗号分隔 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/singer/list` | 获取歌手列表 | `area`=-100, `sex`=-100, `genre`=-100 |
+| `/singer/info` | 获取歌手信息 | `mid`（必填） |
+| `/singer/songs` | 获取歌手歌曲 | `mid`（必填）, `page`=1, `num`=10 |
+| `/singer/albums` | 获取歌手专辑 | `mid`（必填）, `page`=1, `num`=10 |
+| `/singer/desc` | 获取歌手简介 | `mids`（必填，逗号分隔） |
+
+`singer/list` 过滤：`area`=-100 全部/200 内地/2 港台/5 欧美/4 日本/3 韩国；`sex`=-100 全部/0 男/1 女/2 乐队；`genre`=-100 全部/7 流行/3 说唱/19 国风等
+
+---
 
 ## 专辑
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /album/detail | value | 专辑详情 |
-| /album/songs | value, num=10, page=1 | 专辑歌曲 |
-| /album/cover | mid, size=300 | 封面链接，size: 150/300/500/800 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/album/detail` | 获取专辑详情 | `value`（必填，专辑 ID 或 mid） |
+| `/album/songs` | 获取专辑歌曲 | `value`（必填）, `num`=10, `page`=1 |
+| `/album/cover` | 获取专辑封面 | `mid`（必填）, `size`=300 |
+
+`size`：150, 300, 500, 800
+
+---
 
 ## 歌单
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /songlist/detail | songlist_id, num=10, page=1, onlysong=false | 歌单详情 |
-| /songlist/songs | songlist_id | 歌单全部歌曲 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/songlist/detail` | 获取歌单详情 | `songlist_id`（必填）, `num`=10, `page`=1, `onlysong`=false |
+| `/songlist/songs` | 获取歌单所有歌曲 | `songlist_id`（必填） |
+
+---
 
 ## 排行榜
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /top/category | 无 | 排行榜分类 |
-| /top/detail | top_id, num=10, page=1 | 排行榜详情 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/top/category` | 获取排行榜分类 | 无 |
+| `/top/detail` | 获取排行榜详情 | `top_id`（必填）, `num`=10, `page`=1 |
+
+---
 
 ## MV
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /mv/detail | vids | MV 详情，vids 逗号分隔 |
-| /mv/urls | vids | MV 播放链接 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/mv/detail` | 获取 MV 详情 | `vids`（必填，逗号分隔） |
+| `/mv/urls` | 获取 MV 播放链接 | `vids`（必填，逗号分隔） |
+
+---
 
 ## 歌词
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /lyric | value, qrc=false, trans=false, roma=false | 歌词。qrc 逐字, trans 翻译, roma 罗马音 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/lyric` | 获取歌词 | `value`（必填，歌曲 ID 或 mid）, `qrc`=false, `trans`=false, `roma`=false |
+
+`qrc` 逐字歌词，`trans` 翻译歌词，`roma` 罗马音
+
+---
 
 ## 评论
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /comment/count | biz_id | 评论数量 |
-| /comment/hot | biz_id, page_num=1, page_size=15 | 热评 |
-| /comment/new | biz_id, page_num=1, page_size=15 | 最新评论 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/comment/count` | 获取评论数量 | `biz_id`（必填，歌曲/专辑等业务 ID） |
+| `/comment/hot` | 获取热评 | `biz_id`（必填）, `page_num`=1, `page_size`=15 |
+| `/comment/new` | 获取最新评论 | `biz_id`（必填）, `page_num`=1, `page_size`=15 |
+
+---
 
 ## 推荐
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /recommend/feed | 无 | 主页推荐 |
-| /recommend/guess | 无 | 猜你喜欢 |
-| /recommend/songlist | 无 | 推荐歌单 |
-| /recommend/newsong | 无 | 推荐新歌 |
+| 路径 | 说明 | 参数 |
+|------|------|------|
+| `/recommend/feed` | 获取主页推荐 | 无 |
+| `/recommend/guess` | 猜你喜欢 | 无 |
+| `/recommend/songlist` | 推荐歌单 | 无 |
+| `/recommend/newsong` | 推荐新歌 | 无 |
 
-## 用户（部分需 Cookie）
+---
 
-| 路径 | 参数 | 说明 |
-|-----|------|------|
-| /user/homepage | euin | 用户主页 |
-| /user/vip | 无 | VIP 信息，需 cookie |
-| /user/follow_singers | euin, page=1, num=10 | 关注歌手 |
-| /user/fans | euin, page=1, num=10 | 粉丝列表 |
-| /user/friends | page=1, num=10 | 好友列表，需 cookie |
-| /user/fav_songs | euin, page=1, num=10 | 收藏歌曲 |
-| /user/fav_songlists | euin, page=1, num=10 | 收藏歌单 |
+## MCP 调用示例
+
+```
+GET {base_url}/search/general?keyword=周杰伦&page=1
+GET {base_url}/song/urls?mids=002xxx&file_type=MP3_320
+GET {base_url}/lyric?value=123456&trans=true
+```
+
+错误码：`code` 非 200 表示失败；404 资源不存在；422 参数校验失败。

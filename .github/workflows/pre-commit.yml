@@ -3,7 +3,7 @@ name: pre-commit
 on:
   pull_request:
   push:
-    branches: [main, Rixin-Personal-Dev]
+    branches: [main]
 
 jobs:
   pre-commit:
